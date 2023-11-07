@@ -3,23 +3,21 @@ from hashlib import pbkdf2_hmac
 import os
 import inspect
 from ve_utils.utype import UType as Ut
-from ve_utils.usys import USys as Usys
 
+"""Hash crack helper class"""
 class HashCracker:
-    def __init__(self):
-        """"""
-    
+
     @staticmethod
     def dict_reader(file_path: str):
-        """"""
+        """Read a dictionary line by line"""
         if os.path.isfile(file_path):
             with open(file_path, "r") as content:
                 for line in content:
                     yield line.replace(' ', '').replace('\n', '').replace('\r', '')
 
     @staticmethod
-    def hash_test(hash_crack, password):
-        """"""
+    def hash_test(hash_crack: str, password: bytes) -> bool:
+        """Test if hash is equal to password"""
         result = False
         hash_test = hashlib.sha1(password).hexdigest()
         if hash_test == hash_crack:
@@ -27,8 +25,8 @@ class HashCracker:
         return result
 
     @staticmethod
-    def hash_salted_test(hash_crack, password, hash_dict):
-        """"""
+    def hash_salted_test(hash_crack: str, password: bytes, hash_dict: str) -> tuple:
+        """Test if hash is equal to password with salt before or after"""
         for salt in HashCracker.dict_reader(hash_dict):
             hashed = b"%s%s" % (salt.encode('utf-8'), password)
             hash_test = hashlib.sha1(hashed).hexdigest()
@@ -42,8 +40,11 @@ class HashCracker:
         
 
     @staticmethod
-    def hash_compare(hash_crack, pass_dict, hash_dict=None):
-        """"""
+    def hash_compare(hash_crack: str,
+                     pass_dict: str,
+                     hash_dict: str or None = None
+                     ) -> str or tuple:
+        """Brute force a hash crack with dictionaries."""
         for password in HashCracker.dict_reader(pass_dict):
             b_password = password.encode('utf-8')
             
@@ -60,7 +61,7 @@ class HashCracker:
                 
 
 def crack_sha1_hash(hash_crack, use_salts=False):
-    """"""
+    """Brute force a hash crack with dictionaries."""
     current_script_path = os.path.dirname(
         os.path.abspath(inspect.getfile(inspect.currentframe()))
     )
