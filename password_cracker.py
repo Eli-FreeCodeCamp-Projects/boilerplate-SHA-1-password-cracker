@@ -2,7 +2,6 @@ import hashlib
 from hashlib import pbkdf2_hmac
 import os
 import inspect
-from ve_utils.utype import UType as Ut
 
 """Hash crack helper class"""
 class HashCracker:
@@ -72,7 +71,7 @@ def crack_sha1_hash(hash_crack, use_salts=False):
         hash_dict = None
     crack = HashCracker.hash_compare(hash_crack, pass_dict, hash_dict)
 
-    if Ut.is_tuple(crack):
+    if isinstance(crack, tuple):
         result = crack[1]
     else:
         result = crack
